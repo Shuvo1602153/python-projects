@@ -55,7 +55,8 @@ session_status =["exit","quit"]
 
 while is_running:
     user_message = input("Please type your prompt/message or type 'exit' or 'quit' to stop: ")
-    if user_message.strip().lower() in session_status:
+    clean_message = user_message.strip().lower()
+    if clean_message in session_status:
         is_running = False
         print("...Your session is closing... \n" 
         f"Your session token is : {total_tokens} | cost is : {total_cost:.5f} \n" 
@@ -63,12 +64,17 @@ while is_running:
         ".....Good Bye....."
         )
         print( read_chat_history(log_file))
+    elif clean_message == "history":
+        print("\n----- Chat History -----")
+        print(read_chat_history(log_file))
+        print("------------------------\n")
+        continue
     else:
         try:
-            if not user_message.strip():
+            if not clean_message:
                 print("Message cannot be empty!")
                 continue
-            current_tokens = token_calculate(user_message)
+            current_tokens = token_calculate(clean_message)
             if current_tokens < 0 :
                 print("Tokens cannot be negative.")
             total_tokens += current_tokens
@@ -76,7 +82,7 @@ while is_running:
             total_cost += current_cost 
 
             log_entry = (
-                f"Prompt: {user_message}\n"
+                f"Prompt: {user_message.strip()}\n"
                 f"Current Tokens : {current_tokens} and Current Cost : {current_cost:.5f}\n"
                 f"Total Tokens : {total_tokens} and Total Cost : {total_cost:.5f}\n"
                 "----------------------------------------\n"
