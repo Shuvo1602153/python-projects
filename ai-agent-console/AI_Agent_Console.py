@@ -4,8 +4,13 @@ def token_calculate(message):
 def token_cost_calculate(token,rate_per_1_k):
     return ((token / 1000) * rate_per_1_k )
 def save_to_log_file(file_name,log_lines):
-    with open(file_name, "a", encoding="utf-8") as file:
-        file.write(log_lines)
+    try:
+        with open(file_name, "a", encoding="utf-8") as file:
+            file.write(log_lines)
+        return True
+    except OSError as e:
+        print(f"Could not save log to '{file_name}': {e}")
+        return False
 
 def read_chat_history(file_name):
     try:
